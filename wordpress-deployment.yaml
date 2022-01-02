@@ -44,12 +44,17 @@ spec:
         app: wordpress
         tier: frontend
     spec:
+      initContainers:
+      - name: init-command
+        image: debian
+        command: ["/bin/sh"]
+        args: ["-c", "echo $(WORDPRESS_SERVICE); echo $(MYSQL_SERVICE)"]
       containers:
       - image: wordpress:4.8-apache
         name: wordpress
         env:
         - name: WORDPRESS_DB_HOST
-          value: wordpress-mysql
+          value: $(MYSQL_SERVICE)
         - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
